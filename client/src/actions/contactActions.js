@@ -1,25 +1,52 @@
 import * as api from '../api';
-import { FETCH_ALL, UPDATE, CREATE, DELETE } from '../constants/actionTypes';
+import { FETCH_ALL, FETCH_CONTACT, FETCH_BY_SEARCH, UPDATE, CREATE, DELETE, START_LOADING, STOP_LOADING } from '../constants/actionTypes';
 
 //Action Creators
-export const getContacts = () => async (dispatch) => {
+export const getContacts = (page) => async (dispatch) => {
     try {
-        const { data } = await api.fetchContacts();
+        dispatch({ type:START_LOADING });
+        const { data } = await api.fetchContacts(page);
         dispatch({ type: FETCH_ALL, payload: data });
+        dispatch({ type:STOP_LOADING });
     } catch (error) {
         console.log(error);
     }
-}
+};
+
+export const getContact = (id) => async (dispatch) => {
+    try {
+        dispatch({ type:START_LOADING });
+        const { data } = await api.fetchContact(id);
+        dispatch({ type: FETCH_CONTACT, payload: data });
+        dispatch({ type:STOP_LOADING });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const getContactsBySearch = (searchQuery) => async (dispatch) => {
+    try {
+        dispatch({ type:START_LOADING });
+        const { data } = await api.fetchContactsBySearch(searchQuery);
+
+        dispatch({ type: FETCH_BY_SEARCH, payload: data });
+        dispatch({ type:STOP_LOADING });
+    } catch (error) {
+        console.log(error);
+    }
+};
 
 export const createContact = (contact) => async (dispatch) => {
     try {
+        dispatch({ type:START_LOADING });
         const { data } = await api.createContacts(contact);
 
         dispatch({ type: CREATE, payload: data});
+        dispatch({ type:STOP_LOADING });
     } catch (error) {
         console.log(error);
     }
-}
+};
 
 export const updateContact = (id, contact) => async (dispatch) => {
     try {
@@ -29,7 +56,7 @@ export const updateContact = (id, contact) => async (dispatch) => {
     } catch (error) {
         console.log(error);
     }
-}
+};
 
 export const deleteContact = (id) => async (dispatch) => {
     try {
@@ -38,7 +65,7 @@ export const deleteContact = (id) => async (dispatch) => {
     } catch (error) {
         console.log(error);
     }
-}
+};
 
 export const hotContact = (id) => async (dispatch) => {
     try {
@@ -47,4 +74,4 @@ export const hotContact = (id) => async (dispatch) => {
     } catch (error) {
         console.log(error)
     }
-}
+};
