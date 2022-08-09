@@ -9,12 +9,13 @@ import AuthInput from './AuthInput.js';
 import useStyles from './styles.js';
 
 
-const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: ''};
+const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '', secretWord: ''};
 
 const Auth = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const [showPassword, setShowPassword] = useState(false);
+    const [showSecretWord, setShowSecretWord] = useState(false);
     const [isSignUp, setIsSignUp] = useState(false);
     const [formData, setFormData] = useState(initialState);
     const navigate = useNavigate();
@@ -35,6 +36,7 @@ const Auth = () => {
     };
 
     const handleShowPassword = () => setShowPassword((prevShowPassword) => !prevShowPassword);
+    const handleShowSecretWord = () => setShowSecretWord((prevShowSecretWord) => !prevShowSecretWord);
 
     const switchMode = () => {
         setIsSignUp((prevIsSignUp) => !prevIsSignUp);
@@ -63,8 +65,15 @@ const Auth = () => {
                             </>
                         )
                     }
+                    {
+                        isSignUp && (
+                            <>
+                                <AuthInput name="secretWord" label="Secret Word" handleChange={handleChange} type={showSecretWord ? "text" : "secretWord"} handleShow={handleShowSecretWord}></AuthInput>
+                            </>
+                        )
+                    }
                     <AuthInput name="email" label="Email Address" handleChange={handleChange} type="email"></AuthInput>
-                    <AuthInput name="password" label="Password" handleChange={handleChange} type={showPassword ? "text" : "password"} handleShowPassword={handleShowPassword}></AuthInput>
+                    <AuthInput name="password" label="Password" handleChange={handleChange} type={showPassword ? "text" : "password"} handleShow={handleShowPassword}></AuthInput>
                     { isSignUp && <AuthInput name="confirmPassword" label="RepeatPassword" handleChange={handleChange} type="password"></AuthInput>}
                 </Grid>
                 
