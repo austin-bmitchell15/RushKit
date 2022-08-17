@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Avatar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Divider, ListItemIcon } from '@material-ui/core'
-import { PersonAdd, Settings, LogoutIcon } from '@material-ui/icons'
+import { AppBar, Avatar, Toolbar, Typography, Button, IconButton } from '@material-ui/core'
 import {Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import decode from 'jwt-decode';
@@ -14,8 +13,6 @@ const Navbar = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
-    const [anchorEl, setAnchorEl] = useState();
-    const open = Boolean(anchorEl);
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
 
     const logout = () => {
@@ -24,14 +21,9 @@ const Navbar = () => {
         setUser(null);
     };
 
-    const handleClick = (e) => {
+    const openUserInfo = (e) => {
         e.preventDefault();
-        setAnchorEl(e.currentTarget);
-    };
-
-    const toggleClose = (e) => {
-        e.preventDefault();
-        setAnchorEl(null);
+        navigate(`/user/${user?.result._id}`);
     };
 
     useEffect(() => {
@@ -55,24 +47,9 @@ const Navbar = () => {
             <Toolbar className={classes.toolbar}>
                 {user && (
                     <div className={classes.profile}>
-                        <IconButton onClick={handleClick} size="small" sx={{ ml: 2 }} aria-controls={open ? 'account-menu' : undefined} aria-haspopup="true" aria-expanded={open ? 'true' : undefined}>
+                        <IconButton onClick={openUserInfo} size="small" sx={{ ml: 2 }}>
                             <Avatar className={classes.purple} alt={user.result.name} src={user.result.imageUrl}>{user.result.name.charAt(0)}</Avatar>
                         </IconButton>
-                        <Menu anchorEl={anchorEl} id="account-menu" open={open} onClose={toggleClose} onClick={toggleClose} getContentAnchorEl={null} anchorOrigin={{vertical: 'bottom', horizontal: 'right'}} transformOrigin={{vertical: 'top', horizontal: 'right'}}>
-                            <MenuItem>
-                            <Avatar className={classes.purple} alt={user.result.name} src={user.result.imageUrl}>{user.result.name.charAt(0)}</Avatar> Profile
-                            </MenuItem>
-                                <Divider />
-                            <MenuItem>
-                                <ListItemIcon>
-                                    <Settings fontSize="small" />
-                                </ListItemIcon>
-                                Settings
-                            </MenuItem>
-                            <MenuItem color="primary" onClick={logout}>
-                                Logout
-                            </MenuItem>
-                        </Menu>
                         <Button variant="contained" className={classes.logout} color="primary" onClick={logout}>Logout</Button>
                     </div>
                 )}

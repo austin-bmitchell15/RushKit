@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { Card, CardActions, CardContent, CardMedia, Button, Typography, ButtonBase } from '@material-ui/core';
+import { Card, CardHeader, CardActions, CardMedia, Button, Typography, ButtonBase } from '@material-ui/core';
 import Whatshot from '@material-ui/icons/Whatshot';
 import DeleteIcon from '@material-ui/icons/Delete'
 import MoreVertIcon from '@material-ui/icons/MoreHoriz';
 import useStyles from './styles.js';
-import moment from 'moment';
+import { DOORMAN, USER, ADMIN } from "../../../constants/roleTypes.js"; 
 import { useDispatch } from 'react-redux';
 
 import { deleteContact, hotContact } from "../../../actions/contactActions.js";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Contact = ({ contact: contact, setCurrentId }) => {
     const classes = useStyles();
@@ -27,30 +27,28 @@ const Contact = ({ contact: contact, setCurrentId }) => {
     return ( 
         <Card className={classes.card} raised elevation={6}>
             <ButtonBase className={classes.cardAction} onClick={openContact}>
-                <CardMedia className={classes.media} image={contact.selectedFile} email={contact.email} compoennt='img'/>
-                <div className={classes.overlay}>
-                    <Typography variant="h6">{contact.name}</Typography>
-                    <Typography variant="body2">Submitted by {contact.creatorName} at {moment(contact.createdAt).fromNow()}</Typography>
-                </div>
+                <CardHeader color="primary" title={contact.name} subheader={contact.email}></CardHeader>
+                <CardMedia className={classes.media} image={contact.selectedFile} component='img'/>
                 <div className={classes.details}>
-                    <Typography variant="body2" color="textSecondary">{contact.phone}</Typography>
+                    <Typography variant="body2" color="textSecondary">{contact.phoneNumber}</Typography>
                 </div>
-                <Typography className={classes.email} variant="h5" gutterBottom>{contact.email}</Typography>
-                <CardContent>
-                    <Typography variant="body2" color="textSecondary" gutterBottom>{contact.message}</Typography>
-                </CardContent>
             </ButtonBase>
             <CardActions className={classes.cardActions}>
-                <Button size="small" color="primary" onClick={() => setIsHot((currValue) => toggleHotList(currValue))}>
-                    {isHot === false ? <Whatshot fontSize="medium" /> : <Whatshot fontSize="medium" style={{ color: "red" }}/>}
-                </Button>
-                {(user?.result?._id === contact?.creatorUserId) && (
+                {(user?.result?.role === ADMIN) && (
+                    <Button size="small" color="primary" onClick={() => setIsHot((currValue) => toggleHotList(currValue))}>
+                        {isHot === false ? <Whatshot fontSize="medium" /> : <Whatshot fontSize="medium" style={{ color: "red" }}/>}
+                    </Button>
+                )}
+                {(user?.result?.role === DOORMAN || user?.result?.role === USER) &&
+                    <Whatshot fontSize="medium"style={isHot ? { color: "red" } : {color: "default"}}/>
+                }
+                {(user?.result?.role === DOORMAN || user?.result?.role === ADMIN) && (
                     <Button size="small" color="primary" onClick={() => {dispatch(deleteContact(contact._id))}}>
                         <DeleteIcon fontSize="small" />
                         Delete
                     </Button>) 
                 }  
-                {(user?.result?._id === contact?.creatorUserId) && (
+                {(user?.result?.role === DOORMAN || user?.result?.role === ADMIN) && (
                         <Button color='primary' size="small" onClick={() => setCurrentId(contact._id)}>
                             <MoreVertIcon fontSize="medium"></MoreVertIcon>
                         </Button>
