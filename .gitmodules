@@ -1,6 +1,3 @@
-[submodule "rushkit-client"]
-	path = rushkit-client
-	url = git@github.com:austin-bmitchell15/rushkit-client.git
 [submodule "rushkit-server"]
 	path = rushkit-server
 	url = git@github.com:austin-bmitchell15/rushkit-server.git
